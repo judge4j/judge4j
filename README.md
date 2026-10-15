@@ -28,13 +28,15 @@
 
 **Judge4j is an LLM evaluation library for Java and Spring AI.** Write an ordinary **JUnit 5** test that calls
 your real service, then score and compare **prompts and models** with deterministic checks, **LLM-as-a-judge**
-rubrics and **embedding similarity**. Judge4j runs every input against every variant and gives you two things:
-normal pass/fail results in your build, and one self-contained HTML report that puts the variants side by side.
+rubrics and **embedding similarity**. Swap what you compare with **plain Mockito** (or any Spring setup): no new
+DSL to learn. Judge4j runs every input against every variant and gives you two things: normal pass/fail
+results in your build, and one self-contained HTML report that puts the variants side by side.
 
 ![A tour of the Judge4j report](docs/images/report-tour.gif)
 
 **On this page:**
 [How it works](#how-it-works) ·
+[Swap with Mockito](#swap-what-you-compare-with-mockito) ·
 [Quick start](#quick-start) ·
 [Reading the report](#reading-the-report) ·
 [Assertions](#assertions) ·
@@ -50,7 +52,8 @@ test:
 
 1. **A dataset** of inputs, written as a short YAML file.
 2. **Variants**: the things you want to compare (two system prompts, three models, two settings). A
-   variant is just a label plus a few lines of setup that run before each test.
+   variant is just a label plus a few lines of setup that run before each test, and plain Mockito is all it
+   takes.
 3. **Assertions** that score what comes out: deterministic checks, an LLM judge, embedding similarity,
    or any function you write.
 
@@ -68,6 +71,28 @@ Everything runs in-process inside your normal test run. There is no server to st
 expose and no second toolchain. The model call and every step your application takes after it
 (parsing, filtering, formatting) are part of what gets evaluated, so you measure what your users
 actually receive.
+
+## Swap what you compare with Mockito
+
+There is nothing new to learn. A variant's setup is ordinary Java, so you change the prompt, the model or any
+collaborator with the Mockito you already know. Judge4j wraps your service in a spy once; each variant then
+stubs the one method where the thing you want to compare enters:
+
+```java
+// Prompt A vs prompt B: stub the method that returns the system prompt
+Mockito.doReturn(promptB).when(spy).buildSystemMessage();
+
+// Model X vs model Y: stub the method that returns the ChatClient
+Mockito.doReturn(clientForModelY).when(spy).chatClient();
+```
+
+Everything else (input validation, prompt assembly, parsing, post-processing) stays your real code, so you
+measure what your users actually receive. You can stub any other collaborator the same way, such as a
+retriever, a tool or a feature flag.
+
+Mockito is a convenience, not a requirement. A variant is just code that receives your Spring beans, so
+setting a value on a configuration bean works too. `judge4j-spring-test` already brings Mockito in, so there
+is nothing extra to add.
 
 ## Quick start
 
