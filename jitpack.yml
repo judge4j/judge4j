@@ -1,0 +1,6 @@
+# Lets people use a tagged release straight from GitHub through https://jitpack.io
+# (a free build-on-demand repository). JitPack defaults to Java 8; Judge4j needs 17.
+jdk:
+  - openjdk17
+install:
+  - ./mvnw -B install -DskipTests -Dgpg.skip=true -pl '!judge4j-examples'

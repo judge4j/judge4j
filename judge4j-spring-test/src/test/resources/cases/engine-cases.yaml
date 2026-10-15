@@ -1,0 +1,16 @@
+- id: alpha
+  description: First case
+  vars:
+    text: hello
+    count: 3
+    big: 5000000000
+    flags: [a, b]
+    nothing: null
+- id: beta
+  description: Second case
+  vars:
+    text: world
+    count: 7
+    big: 6000000000
+    flags: [c]
+    nothing: null

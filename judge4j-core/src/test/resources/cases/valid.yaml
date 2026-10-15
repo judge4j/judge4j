@@ -1,0 +1,11 @@
+- id: first
+  description: The first case
+  vars:
+    zeta: 1
+    alpha: two
+    mid: [a, b]
+- id: second
+  vars:
+    count: 5
+    nothing: null
+- id: third

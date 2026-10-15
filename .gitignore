@@ -1,0 +1,26 @@
+# Build output
+target/
+!.mvn/wrapper/maven-wrapper.properties
+
+# Generated evaluation reports
+**/target/judge4j/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/
+.factorypath
+*.swp
+.DS_Store
+
+# Secrets and local configuration - never commit these
+.env
+.env.*
+*.pem
+*.key
+application-local.yml
+application-local.yaml
+application-local.properties

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.judge4j</groupId>
+        <artifactId>judge4j-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>judge4j-examples</artifactId>
+
+    <name>Judge4j Examples</name>
+    <description>A document-summarization Spring Boot application and evaluations that compare its prompts and models. Not published.</description>
+
+    <properties>
+        <!-- A demo application, not a library: never deployed, and no sources/Javadoc jars. -->
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <maven.source.skip>true</maven.source.skip>
+        <skipPublishing>true</skipPublishing>
+        <!-- Live-model evaluations (anything extending the "eval" tag, i.e. every @EvalVariants class)
+             are excluded from a plain `mvn test` so the default build needs no API keys and costs
+             nothing. Activate them with `-Pevals` (see the profile below). -->
+        <judge4j.excludedGroups>eval</judge4j.excludedGroups>
+        <judge4j.groups></judge4j.groups>
+        <judge4j.ignoreEvalFailures>false</judge4j.ignoreEvalFailures>
+        <!-- Spring Boot 3.5.x rides Spring Framework 6.2.x, matching the reactor's spring.version. -->
+        <spring-boot.version>3.5.15</spring-boot.version>
+        <!-- spring-ai.version (1.1.x, paired with Spring Boot 3.5.x, carries the Google GenAI
+             starter absent from the older 1.0.x line) is inherited from the parent pom, kept in
+             sync with judge4j-spring-ai. -->
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- Real use case: a Spring MVC + Spring AI document summarization service. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- All three chat starters live on the classpath at once; spring.ai.model.chat in
+             application.yml picks which one is actually active, so switching providers is a
+             config-only change (see SummarizationService for how the active provider/model are
+             read back generically). -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-anthropic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-openai</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-google-genai</artifactId>
+        </dependency>
+        <!-- Embeddings are a separate artifact from chat. Used by the embedding-similarity evaluation. -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-google-genai-embedding</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Judge4j: the summarization service is evaluated by @EvalTest classes under src/test. -->
+        <dependency>
+            <groupId>io.github.judge4j</groupId>
+            <artifactId>judge4j-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.judge4j</groupId>
+            <artifactId>judge4j-spring-test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.judge4j</groupId>
+            <artifactId>judge4j-spring-ai</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.judge4j</groupId>
+            <artifactId>judge4j-matchers</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <groups>${judge4j.groups}</groups>
+                    <excludedGroups>${judge4j.excludedGroups}</excludedGroups>
+                    <testFailureIgnore>${judge4j.ignoreEvalFailures}</testFailureIgnore>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <mainClass>io.github.judge4j.examples.summarization.SummarizationApplication</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!--
+            mvn test -Pevals   (needs the active provider's API key, e.g. GOOGLE_API_KEY)
+
+            Runs ONLY the live-model evaluations. SummarizerPromptEvalTest deliberately contains
+            two "[demo failure]" assertions so you can see how a failing assertion is reported;
+            they would otherwise fail the build every time, so failures are reported but do not
+            break the build here. Pass -Djudge4j.ignoreEvalFailures=false to make them fail it
+            (the way a real gating suite would).
+        -->
+        <profile>
+            <id>evals</id>
+            <properties>
+                <judge4j.groups>eval</judge4j.groups>
+                <judge4j.excludedGroups></judge4j.excludedGroups>
+                <judge4j.ignoreEvalFailures>true</judge4j.ignoreEvalFailures>
+            </properties>
+        </profile>
+    </profiles>
+</project>

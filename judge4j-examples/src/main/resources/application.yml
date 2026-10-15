@@ -1,0 +1,81 @@
+spring:
+  application:
+    name: judge4j-summarizer
+  ai:
+    # Which provider is active; only that provider's ChatModel bean is auto-configured (the
+    # other two starters stay dormant). Override per environment, e.g. SPRING_AI_MODEL_CHAT=openai.
+    # Export the matching *_API_KEY below and things just work — no code change per provider.
+    model:
+      chat: google-genai   # anthropic | openai | google-genai
+      # Used by the embedding-similarity evaluation in SummarizerPromptEvalTest. It embeds via Google
+      # GenAI independently of whichever provider spring.ai.model.chat points at above, so it needs
+      # GOOGLE_API_KEY even when chat is switched to anthropic/openai. It must be set explicitly:
+      # with several provider starters on the classpath Spring AI would otherwise try to configure
+      # them all.
+      embedding: google-genai
+      # The OpenAI starter also auto-configures audio/image/moderation models by default (each
+      # independently of spring.ai.model.chat above) and each hard-fails startup without its own
+      # OPENAI_API_KEY. Turn them off since nothing here uses them; "none" just needs to not match
+      # any real provider id for that modality.
+      image: none
+      moderation: none
+      audio:
+        speech: none
+        transcription: none
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      chat:
+        options:
+          # Swap for another Claude model as needed, e.g. claude-opus-5 or claude-haiku-4-5.
+          model: claude-sonnet-5
+          temperature: 0.2
+          # Structured JSON output (summary + key points) needs more room than the 500-token default.
+          max-tokens: 2048
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        options:
+          model: gpt-5
+          temperature: 0.2
+          max-tokens: 2048
+    google:
+      genai:
+        # Export GOOGLE_API_KEY before starting the app or running the evaluations; the calls are real.
+        api-key: ${GOOGLE_API_KEY:}
+        chat:
+          options:
+            # Swap for another Gemini model as needed, e.g. gemini-2.5-pro or gemini-2.5-flash-lite.
+            model: gemini-3.5-flash-lite
+            temperature: 0.2
+            max-output-tokens: 2048
+        embedding:
+          # Embeddings use their own connection settings; reuse the chat key.
+          api-key: ${spring.ai.google.genai.api-key}
+          text:
+            options:
+              model: gemini-embedding-001
+
+server:
+  port: 8081
+
+# Business rules for the summarization service (bound by SummarizationProperties).
+summarizer:
+  min-document-chars: 200
+  max-document-chars: 50000
+  default-style: PARAGRAPH
+  default-max-words: 150
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    io.github.judge4j.examples.summarization: DEBUG
+    # Set to DEBUG to log the full rendered prompt and raw model reply.
+    org.springframework.ai.chat.client.advisor: INFO

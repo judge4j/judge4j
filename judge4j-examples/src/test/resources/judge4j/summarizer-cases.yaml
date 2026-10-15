@@ -1,0 +1,29 @@
+# Each case's `mustMention` is a fact any acceptable summary has to keep; the evaluations check it
+# with a deterministic matcher, so no expected-answer field is needed.
+- id: quarterly-report
+  description: Summarize a quarterly product update
+  vars:
+    mustMention: "40%"
+    document: >
+      The product team shipped three major features this quarter and reduced average
+      page load time by 40%. Customer support tickets dropped by 15% compared to last
+      quarter. The team plans to focus on mobile performance next quarter.
+- id: incident-postmortem
+  description: Summarize an incident postmortem
+  vars:
+    mustMention: connection pool
+    document: >
+      A database failover on 3 March caused 12 minutes of downtime for the checkout
+      service. The root cause was a misconfigured connection pool limit. The team
+      added an automated alert for connection pool saturation to catch this earlier
+      next time.
+- id: meeting-notes
+  description: Summarize meeting notes with decisions and owners
+  vars:
+    mustMention: Priya
+    document: >
+      In Tuesday's planning meeting the group agreed to move the public launch from
+      June to July so that the security review can finish first. Priya will own the
+      review and report back on the 20th. Marcus raised concerns about the pricing page
+      copy and will draft two alternatives for the next meeting. The team decided not to
+      add the reporting dashboard to this release and to revisit it in the autumn.

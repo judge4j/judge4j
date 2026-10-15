@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.judge4j</groupId>
+    <artifactId>judge4j-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Judge4j</name>
+    <description>Evaluate LLM prompts and models as ordinary JUnit 5 tests, in-process, with a side-by-side comparison report.</description>
+    <url>https://github.com/judge4j/judge4j</url>
+    <inceptionYear>2026</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Judge4j contributors</name>
+            <url>https://github.com/judge4j</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/judge4j/judge4j.git</connection>
+        <developerConnection>scm:git:git@github.com:judge4j/judge4j.git</developerConnection>
+        <url>https://github.com/judge4j/judge4j</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/judge4j/judge4j/issues</url>
+    </issueManagement>
+
+    <properties>
+        <!-- Spring Boot 3 and Spring AI both require Java 17, so Judge4j targets 17 too. -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <junit.version>5.11.4</junit.version>
+        <junit-platform.version>1.11.4</junit-platform.version>
+        <jackson.version>2.18.3</jackson.version>
+        <spring.version>6.2.0</spring.version>
+        <mockito.version>5.14.2</mockito.version>
+        <!-- Kept in sync with judge4j-spring-ai and judge4j-examples, which both import spring-ai-bom. -->
+        <spring-ai.version>1.1.8</spring-ai.version>
+
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+        <maven.surefire.version>3.5.2</maven.surefire.version>
+        <maven.source.plugin.version>3.3.1</maven.source.plugin.version>
+        <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
+        <maven.gpg.plugin.version>3.2.7</maven.gpg.plugin.version>
+        <central.publishing.plugin.version>0.7.0</central.publishing.plugin.version>
+    </properties>
+
+    <modules>
+        <module>judge4j-core</module>
+        <module>judge4j-junit5</module>
+        <module>judge4j-matchers</module>
+        <module>judge4j-spring-test</module>
+        <module>judge4j-spring-ai</module>
+        <module>judge4j-examples</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.plugin.version}</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                        <parameters>true</parameters>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <!--
+            Packaging for Maven Central:   mvn -Prelease clean deploy
+            Needs a GPG key and Central Portal credentials (server id "central" in settings.xml).
+            To check that the artifacts build without signing or publishing:
+                mvn -Prelease -Dgpg.skip=true -DskipTests package
+            judge4j-examples is a demo application and is never published.
+        -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>${maven.source.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven.javadoc.plugin.version}</version>
+                        <configuration>
+                            <!-- Catch malformed Javadoc, but do not demand a comment on every member. -->
+                            <doclint>all,-missing</doclint>
+                            <release>${maven.compiler.release}</release>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven.gpg.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central.publishing.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
