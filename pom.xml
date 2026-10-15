@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <name>Judge4j</name>
-    <description>Evaluate LLM prompts and models as ordinary JUnit 5 tests, in-process, with a side-by-side comparison report.</description>
+    <description>LLM evaluation framework for Java: test and compare prompts and models as JUnit 5 tests, with LLM-as-a-judge, embedding similarity and a side-by-side HTML report.</description>
     <url>https://github.com/judge4j/judge4j</url>
     <inceptionYear>2026</inceptionYear>
 

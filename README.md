@@ -1,15 +1,36 @@
-# Judge4j
+<p align="center">
+  <img src="docs/images/logo.svg" alt="Judge4j logo" width="120">
+</p>
 
-**Evaluate LLM prompts and models as ordinary JUnit 5 tests.**
+<h1 align="center">Judge4j</h1>
 
-Write a test that calls your real service, assert on what the model produces, and compare prompt A
-with prompt B or model X with model Y. Judge4j runs every input against every variant and gives you
-two things: normal pass/fail results in your build, and one self-contained HTML report that puts
-the variants side by side.
+<p align="center">
+  <strong>LLM evaluation framework for Java.<br>Test and compare prompts and models as JUnit 5 tests.</strong>
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick start</a> &nbsp;•&nbsp;
+  <a href="#reading-the-report">Sample reports</a> &nbsp;•&nbsp;
+  <a href="judge4j-examples/README.md">Examples</a> &nbsp;•&nbsp;
+  <a href="ARCHITECTURE.md">How it works</a> &nbsp;•&nbsp;
+  <a href="CONTRIBUTING.md">Contributing</a> &nbsp;•&nbsp;
+  <a href="https://github.com/judge4j/judge4j/issues">Issues</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/judge4j/judge4j/actions/workflows/ci.yml"><img src="https://github.com/judge4j/judge4j/actions/workflows/ci.yml/badge.svg?branch=main" alt="Build status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0"></a>
+  <img src="https://img.shields.io/badge/Java-17%2B-orange" alt="Java 17+">
+  <img src="https://img.shields.io/badge/JUnit-5-25A162" alt="JUnit 5">
+  <img src="https://img.shields.io/badge/Spring_AI-1.1-6DB33F" alt="Spring AI 1.1">
+</p>
+
+**Judge4j is an LLM evaluation library for Java and Spring AI.** Write an ordinary **JUnit 5** test that calls
+your real service, then score and compare **prompts and models** with deterministic checks, **LLM-as-a-judge**
+rubrics and **embedding similarity**. Judge4j runs every input against every variant and gives you two things:
+normal pass/fail results in your build, and one self-contained HTML report that puts the variants side by side.
 
 ![A tour of the Judge4j report](docs/images/report-tour.gif)
-
-Java 17+ &nbsp;·&nbsp; JUnit 5 &nbsp;·&nbsp; Spring Framework 6 &nbsp;·&nbsp; Spring AI 1.1 &nbsp;·&nbsp; Apache-2.0
 
 **On this page:**
 [How it works](#how-it-works) ·

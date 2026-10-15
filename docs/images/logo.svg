@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Judge4j logo: scales comparing two sides">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4338ca"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <g fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <!-- post and base -->
+    <path d="M128 58 V196"/>
+    <path d="M92 198 H164"/>
+    <!-- tilted beam: one side is winning -->
+    <path d="M54 112 L202 80"/>
+    <!-- left pan (lower) -->
+    <path d="M54 112 L30 164 M54 112 L78 164"/>
+    <path d="M24 164 H84 Q80 190 54 190 Q28 190 24 164 Z" fill="#ffffff" fill-opacity="0.18"/>
+    <!-- right pan (higher) -->
+    <path d="M202 80 L178 132 M202 80 L226 132"/>
+    <path d="M172 132 H232 Q228 158 202 158 Q176 158 172 132 Z" fill="#ffffff" fill-opacity="0.18"/>
+  </g>
+  <circle cx="128" cy="52" r="11" fill="#ffffff"/>
+  <!-- check mark: the verdict -->
+  <circle cx="204" cy="204" r="26" fill="#22c55e"/>
+  <path d="M191 204 L200 213 L218 193" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
