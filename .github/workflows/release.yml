@@ -92,8 +92,24 @@ jobs:
       # Tests already passed in the first job. This signs the jars and uploads them to the Central Portal.
       - name: Deploy
         if: steps.creds.outputs.configured == 'true'
-        run: ./mvnw -B -Prelease -DskipTests deploy -pl '!judge4j-examples'
+        shell: bash
+        run: ./mvnw -B -Prelease -DskipTests deploy -pl '!judge4j-examples' 2>&1 | tee deploy.log
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      # Job logs need a signed-in session; annotations are public. Show what Central said either way.
+      - name: Explain the failure
+        if: failure() && steps.creds.outputs.configured == 'true'
+        shell: bash
+        run: |
+          grep -E "ERROR|FAILURE|Could not|Connection|Exception|Unauthorized|errors|warnings" deploy.log \
+            | head -30 | while IFS= read -r line; do echo "::error::${line}"; done
+
+      - name: Show the Central deployment status
+        if: success() && steps.creds.outputs.configured == 'true'
+        shell: bash
+        run: |
+          grep -iE "deployment|validated|validating|published|central" deploy.log \
+            | head -12 | while IFS= read -r line; do echo "::notice::${line}"; done
