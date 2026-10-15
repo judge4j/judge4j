@@ -293,8 +293,10 @@ class SpringEvalTestExtensionTest {
     void latencyExcludesTimeSpentInEvaluators() throws Exception {
         EvalResult result = run(LatencySuite.class).result("alpha", "formal");
 
-        assertTrue(result.latencyMs() >= 100, "method time is counted: " + result.latencyMs());
-        assertTrue(result.latencyMs() < 280, "300 ms inside the evaluator is not: " + result.latencyMs());
+        assertTrue(result.latencyMs() >= 90, "method time is counted: " + result.latencyMs());
+        // If the 700 ms spent inside the evaluator were counted, latency would exceed 800 ms. The wide margin
+        // (about 450 ms of allowed overhead) keeps the test stable on slow, shared CI machines.
+        assertTrue(result.latencyMs() < 550, "700 ms inside the evaluator is not: " + result.latencyMs());
     }
 
     @Test
@@ -645,10 +647,10 @@ class SpringEvalTestExtensionTest {
     static class LatencySuite {
         @EvalTest
         void slowEvaluatorFastMethod(EvalAssertions evaluations) throws InterruptedException {
-            Thread.sleep(120);
+            Thread.sleep(100);
             evaluations.assertThat("x").satisfies(v -> {
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(700);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
