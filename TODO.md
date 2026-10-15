@@ -47,7 +47,6 @@ Today a prompt or model comparison needs a Mockito spy, a seam method on the ser
 
 ## Packaging
 
-- [ ] First release to Maven Central (needs a Central Portal namespace for `io.github.judge4j`
-      and a GPG key; see the release steps in [CONTRIBUTING.md](CONTRIBUTING.md)).
-- [ ] A BOM for the six artifacts.
-- [ ] Gradle usage notes.
+- [ ] Reproducible builds (a fixed `project.build.outputTimestamp`) so the jars on the GitHub Release and on
+      Maven Central are byte-identical; today the release workflow builds twice.
+- [ ] A BOM for the five library artifacts.

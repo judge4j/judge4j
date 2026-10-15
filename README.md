@@ -19,6 +19,7 @@
 
 <p align="center">
   <a href="https://github.com/judge4j/judge4j/actions/workflows/ci.yml"><img src="https://github.com/judge4j/judge4j/actions/workflows/ci.yml/badge.svg?branch=main" alt="Build status"></a>
+  <a href="https://central.sonatype.com/artifact/io.github.judge4j/judge4j-spring-test"><img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Frepo1.maven.org%2Fmaven2%2Fio%2Fgithub%2Fjudge4j%2Fjudge4j-core%2Fmaven-metadata.xml&label=Maven%20Central" alt="Maven Central"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License: Apache 2.0"></a>
   <img src="https://img.shields.io/badge/Java-17%2B-orange" alt="Java 17+">
   <img src="https://img.shields.io/badge/JUnit-5-25A162" alt="JUnit 5">
@@ -70,27 +71,35 @@ actually receive.
 
 ## Quick start
 
-Add the modules you need as test dependencies (Java 17+; build from source with `./mvnw install`):
+Add the modules you need as test dependencies from **Maven Central** (Java 17+). No extra repository is needed:
 
 ```xml
 <dependency>
   <groupId>io.github.judge4j</groupId>
   <artifactId>judge4j-spring-test</artifactId>   <!-- the engine; brings judge4j-core and judge4j-junit5 -->
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <scope>test</scope>
 </dependency>
 <dependency>
   <groupId>io.github.judge4j</groupId>
   <artifactId>judge4j-matchers</artifactId>       <!-- contains, regex, isJson, ... -->
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <scope>test</scope>
 </dependency>
 <dependency>
   <groupId>io.github.judge4j</groupId>
   <artifactId>judge4j-spring-ai</artifactId>      <!-- LLM judge and embedding similarity -->
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <scope>test</scope>
 </dependency>
+```
+
+Gradle (Kotlin DSL):
+
+```kotlin
+testImplementation("io.github.judge4j:judge4j-spring-test:0.1.0")
+testImplementation("io.github.judge4j:judge4j-matchers:0.1.0")
+testImplementation("io.github.judge4j:judge4j-spring-ai:0.1.0")
 ```
 
 **1. Write a dataset.** A YAML list; each case's `vars` become test inputs.

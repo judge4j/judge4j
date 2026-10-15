@@ -4,9 +4,9 @@ All notable changes are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project follows
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased] - 0.1.0
+## [0.1.0] - 2026-10-15
 
-First public version.
+First public version, published to Maven Central as `io.github.judge4j:judge4j-*:0.1.0`.
 
 ### Added
 
